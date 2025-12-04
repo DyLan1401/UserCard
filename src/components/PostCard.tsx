@@ -1,4 +1,4 @@
-import type { User } from "../types/user"
+import type { Post } from "../types/post"
 import type { Button } from "../types/button"
 
 
@@ -15,22 +15,17 @@ function MyButton({ title, disable }: Button) {
 
 
 
-export default function UserCard({ name, email, role, avatar }: User) {
+export default function PostCard({ userId, id, title, body }: Post) {
 
     return (
 
         <div className="w-[300px] h-[300px] flex flex-col gap-4 justify-center items-center rounded-lg p-2 border-1">
-            <img
-                src={avatar}
-                alt={name}
-                className=" w-24 h-24 object-cover mb-3 rounded-2xl"
-            />
             <div>
                 <h2
                     className="font-bold p-2"
-                >{name}</h2>
-                <h4 className="font-semibold">{email}</h4>
-                <MyButton disable={false} title={role} />
+                >{title}</h2>
+                <h4 className="font-semibold">{body}</h4>
+                <MyButton disable={false} />
             </div>
         </div>
 

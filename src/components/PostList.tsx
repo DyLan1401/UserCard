@@ -1,23 +1,23 @@
 import { useEffect, useState } from 'react';
-import UserCard from './UserCard'
-import type { User } from "../types/user";
-import { GetUser } from '../services/userService';
+import PostCard from './PostCard';
+import type { Post } from "../types/post";
+import { GetPost } from '../services/postService';
 
 
 export default function UserList() {
 
-    const [search, setSearch] = useState("");
-    const [roleFilter, setRoleFilter] = useState('all');
+    // const [search, setSearch] = useState("");
+    // const [roleFilter, setRoleFilter] = useState('all');
     //
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
 
-    const [users, setUsers] = useState<User[]>([]);
+    const [users, setUsers] = useState<Post[]>([]);
     //
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const data = await GetUser();
+                const data = await GetPost();
                 setUsers(data);
             } catch (err) {
                 setError((err as Error).message);
@@ -29,21 +29,21 @@ export default function UserList() {
     }, []);
 
 
-    //tạo mảng mới render
-    const FilterRole = users.filter(user => {
-        // hàm re-render theo role của user
-        const rolematch = roleFilter === "all" || user.role === roleFilter;
+    // //tạo mảng mới render
+    // const FilterRole = users.filter(user => {
+    //     // hàm re-render theo role của user
+    //     const rolematch = roleFilter === "all" || user.role === roleFilter;
 
 
 
-        //hàm tìm kiếm 
-        const searchMatch =
-            user.name?.toLowerCase().includes(search.toLowerCase()) ||
-            user.email?.toLowerCase().includes(search.toLowerCase())
+    //     //hàm tìm kiếm 
+    //     const searchMatch =
+    //         user.name?.toLowerCase().includes(search.toLowerCase()) ||
+    //         user.email?.toLowerCase().includes(search.toLowerCase())
 
-        //trả về dữ liệu 
-        return rolematch && searchMatch;
-    });
+    //     //trả về dữ liệu 
+    //     return rolematch && searchMatch;
+    // });
 
 
     if (loading) return <p>Đang tải dữ liệu...</p>;
@@ -51,18 +51,18 @@ export default function UserList() {
     return (
 
         <div className="w-full h-full flex flex-col gap-5  ">
-            <div className='w-full h-full flex justify-around items-center '>
-                {/* tìm kiếm  */}
-                <form action="" className=''>
+            {/* <div className='w-full h-full flex justify-around items-center '> */}
+            {/* tìm kiếm  */}
+            {/* <form action="" className=''>
                     <input type="text"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         className='border-1 rounded-lg px-2 py-1 mr-2'
                     />
-                </form>
+                </form> */}
 
-                {/* lọc theo role của user */}
-                <div className=' flex flex-col gap-3'>
+            {/* lọc theo role của user */}
+            {/* <div className=' flex flex-col gap-3'>
                     <p>Lọc theo role</p>
                     <div className='flex gap-3'>
                         <button
@@ -76,18 +76,16 @@ export default function UserList() {
                             className='px-2 py-1 bg-yellow-300 rounded-3xl'>tất cả</button>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             {/* list user  */}
             <div className="w-full h-full grid grid-cols-3 gap-3 ">
-                {FilterRole.map(user => (
-                    <UserCard
-                        key={user.id}
-                        id={user.id}
-                        name={user.name}
-                        email={user.email}
-                        role={user.role}
-                        avatar={user.avatar}
+                {users.map(post => (
+                    <PostCard
+                        key={post.id}
+                        id={post.id}
+                        title={post.title}
+                        body={post.body}
                     />
                 ))}
             </div>
