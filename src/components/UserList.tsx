@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import UserCard from './UserCard'
 import type { User } from "../types/user";
 import { GetUser } from '../services/userService';
-
+import FormAddUser from './FormAddUser';
 
 export default function UserList() {
     const [users, setUsers] = useState<User[]>([]);
@@ -46,7 +46,6 @@ export default function UserList() {
         });
     }, [users, search, roleFilter]);
 
-
     //tổng tất cả user
     const totalUsers = users.length;
     //tổng user có role admin
@@ -71,9 +70,16 @@ export default function UserList() {
         setSearch(e.target.value);
     }
 
-    if (loading) return <p>Đang tải dữ liệu...</p>;
+    const handleAddUser = (newUser: User): void => {
+        setUsers((prev) => [newUser, ...prev]);
+    };
 
+
+    //
+    if (loading) return <p>Đang tải dữ liệu...</p>;
+    //
     if (error) return <p className='text-red-500'>{error}</p>
+
     return (
         <div className="w-full h-full flex flex-col gap-5  ">
             <div className='w-full h-full flex justify-around items-center '>
@@ -108,7 +114,8 @@ export default function UserList() {
 
                 </div>
             </div>
-
+            {/* Form Add user */}
+            <FormAddUser onAddUser={handleAddUser} />
             {/* list user  */}
             <div className="w-full h-full grid grid-cols-3 gap-3 ">
                 {FilterRole.map(user => (
