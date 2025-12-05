@@ -1,19 +1,19 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import UserCard from './UserCard'
 import type { User } from "../types/user";
 import { GetUser } from '../services/userService';
 
 
 export default function UserList() {
-
+    const [users, setUsers] = useState<User[]>([]);
+    //
     const [search, setSearch] = useState("");
     const [roleFilter, setRoleFilter] = useState('all');
     //
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
 
-    const [users, setUsers] = useState<User[]>([]);
-    //
+
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -28,35 +28,60 @@ export default function UserList() {
         fetchUser();
     }, []);
 
-
     //tạo mảng mới render
-    const FilterRole = users.filter(user => {
-        // hàm re-render theo role của user
-        const rolematch = roleFilter === "all" || user.role === roleFilter;
+    const FilterRole = useMemo(() => {
+        return users.filter(user => {
+            // hàm re-render theo role của user
+            const rolematch =
+                roleFilter === "all" ? true : user.role === roleFilter;
+
+            //hàm tìm kiếm 
+            const searchMatch =
+                user.name?.toLowerCase().includes(search.toLowerCase()) ||
+                user.email?.toLowerCase().includes(search.toLowerCase())
 
 
+            //trả về dữ liệu 
+            return rolematch && searchMatch;
+        });
+    }, [users, search, roleFilter]);
 
-        //hàm tìm kiếm 
-        const searchMatch =
-            user.name?.toLowerCase().includes(search.toLowerCase()) ||
-            user.email?.toLowerCase().includes(search.toLowerCase())
 
-        //trả về dữ liệu 
-        return rolematch && searchMatch;
-    });
+    //tổng tất cả user
+    const totalUsers = users.length;
+    //tổng user có role admin
+    const totalAdmins = users.filter(user => user.role === "admin").length;
+    //tổng user có role user
+    const totalNormalUsers = users.reduce((total, user) => {
+        if (user.role === "user") return total + 1;
+        return total;
+    }, 0);
 
+    //set role là admin
+    const handFilterAdmin = (): void => {
+        setRoleFilter("admin");
+
+    }
+    //set role là user
+    const handFilterUser = (): void => {
+        setRoleFilter("user");
+
+    }
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(e.target.value);
+    }
 
     if (loading) return <p>Đang tải dữ liệu...</p>;
+
     if (error) return <p className='text-red-500'>{error}</p>
     return (
-
         <div className="w-full h-full flex flex-col gap-5  ">
             <div className='w-full h-full flex justify-around items-center '>
                 {/* tìm kiếm  */}
                 <form action="" className=''>
                     <input type="text"
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        onChange={handleSearch}
                         className='border-1 rounded-lg px-2 py-1 mr-2'
                     />
                 </form>
@@ -66,15 +91,21 @@ export default function UserList() {
                     <p>Lọc theo role</p>
                     <div className='flex gap-3'>
                         <button
-                            onClick={() => setRoleFilter("admin")}
+                            onClick={handFilterAdmin}
                             className='px-2 py-1 bg-green-300 rounded-3xl'>Admin</button>
                         <button
-                            onClick={() => setRoleFilter("user")}
+                            onClick={handFilterUser}
                             className='px-2 py-1 bg-yellow-300 rounded-3xl'>User</button>
                         <button
                             onClick={() => setRoleFilter("all")}
                             className='px-2 py-1 bg-yellow-300 rounded-3xl'>tất cả</button>
                     </div>
+                </div>
+                <div className='flex gap-3'>
+                    <div className='px-2 py-1 bg-blue-300 rounded-2xl'>Tổng số user là : {totalUsers}</div>
+                    <div className='px-2 py-1 bg-green-300 rounded-2xl'>Tổng số role admin là : {totalAdmins}</div>
+                    <div className='px-2 py-1 bg-yellow-300 rounded-2xl'>Tổng số role user là : {totalNormalUsers}</div>
+
                 </div>
             </div>
 
