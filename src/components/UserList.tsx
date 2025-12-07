@@ -6,12 +6,15 @@ import FormAddUser from './FormAddUser';
 
 export default function UserList() {
     const [users, setUsers] = useState<User[]>([]);
+    const [editingUser, setEditingUser] = useState<User | null>(null);
+
     //
     const [search, setSearch] = useState("");
     const [roleFilter, setRoleFilter] = useState('all');
     //
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
+
 
 
     useEffect(() => {
@@ -69,10 +72,34 @@ export default function UserList() {
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value);
     }
-
+    //thêm user
     const handleAddUser = (newUser: User): void => {
         setUsers((prev) => [newUser, ...prev]);
     };
+
+    //xóa user
+    const handleDeleteUser = (user: User): void => {
+        try {
+            setUsers((prev) => prev.filter((u) => u.id !== user.id));
+            alert("xoas thanhf cong")
+        } catch (err) {
+            console.log(err);
+            alert("xoa khongo thanhg cong");
+        }
+    }
+
+    //sửa user
+    const handleUpdateUser = (user: User): void => {
+        setEditingUser(user);
+    };
+    const handleConfirmUpdateUser = (updatedUser: User): void => {
+        setUsers((prev) =>
+            prev.map((u) => (u.id === updatedUser.id ? updatedUser : u))
+        );
+
+        setEditingUser(null); // ✅ Thoát chế độ sửa
+    };
+
 
 
     //
@@ -115,17 +142,21 @@ export default function UserList() {
                 </div>
             </div>
             {/* Form Add user */}
-            <FormAddUser onAddUser={handleAddUser} />
+            <FormAddUser
+                onAddUser={handleAddUser}
+                onUpdateUser={handleConfirmUpdateUser}
+                editingUser={editingUser}
+
+            />
             {/* list user  */}
             <div className="w-full h-full grid grid-cols-3 gap-3 ">
                 {FilterRole.map(user => (
                     <UserCard
                         key={user.id}
-                        id={user.id}
-                        name={user.name}
-                        email={user.email}
-                        role={user.role}
-                        avatar={user.avatar}
+                        user={user}
+                        onDeleteUser={handleDeleteUser}
+                        onUpdateUser={handleUpdateUser}
+
                     />
                 ))}
             </div>

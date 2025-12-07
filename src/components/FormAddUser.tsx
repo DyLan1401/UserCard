@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import type { User } from "../types/user";
 type FormErrors = {
     name?: string;
@@ -8,15 +8,26 @@ type FormErrors = {
 
 type FormAddUserProps = {
     onAddUser: (user: User) => void;
+    onUpdateUser: (user: User) => void;   // ✅ BẮT BUỘC PHẢI CÓ
+    editingUser: User | null;
+
 };
 
 
-export default function FormAddUser({ onAddUser }: FormAddUserProps) {
+export default function FormAddUser({ onAddUser, onUpdateUser, editingUser }: FormAddUserProps) {
     const [name, setName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [role, setRole] = useState<"admin" | "user" | undefined>(undefined);
     const [errors, setErrors] = useState<FormErrors>({});
 
+
+    useEffect(() => {
+        if (editingUser) {
+            setName(editingUser.name);
+            setEmail(editingUser.email);
+            setRole(editingUser.role);
+        }
+    }, [editingUser]);
     const handleRole = (event: React.ChangeEvent<HTMLSelectElement>) => {
         //chỉ chọn  1 trong 3 giá trị 
         const value = event.target.value as "admin" | "user" | undefined;
@@ -46,15 +57,29 @@ export default function FormAddUser({ onAddUser }: FormAddUserProps) {
 
         if (Object.keys(newErr).length > 0) return;
 
-        const newUser: User = {
-            id: Date.now(), // fake id tạm
-            name: name,
-            email: email,
-            role: role,
-            avatar: "https://i.pravatar.cc/150", // avatar fake
-        };
+        if (editingUser) {
+            // ✅ ĐANG SỬA
+            const updatedUser: User = {
+                ...editingUser,  // giữ id & avatar cũ
+                name,
+                email,
+                role,
+            };
 
-        onAddUser(newUser); // ✅ GỬI USER LÊN CHA
+            onUpdateUser(updatedUser);
+        } else {
+            // ✅ ĐANG THÊM
+            const newUser: User = {
+                id: Date.now(),
+                name,
+                email,
+                role,
+                avatar: "https://i.pravatar.cc/150",
+            };
+
+            onAddUser(newUser);
+        }
+
 
         // ✅ Reset form
         setName("");
@@ -63,9 +88,6 @@ export default function FormAddUser({ onAddUser }: FormAddUserProps) {
         setErrors({});
 
     }
-
-
-
 
     return (
         <div
@@ -107,8 +129,10 @@ export default function FormAddUser({ onAddUser }: FormAddUserProps) {
                     {errors.role && <p className="text-red-500">{errors.role}</p>}
 
                 </div>
-                <button
-                    type="submit">Thêm người dùng</button>
+                <button type="submit">
+                    {editingUser ? "Cập nhật người dùng" : "Thêm người dùng"}
+                </button>
+
             </form>
         </div>
     )
