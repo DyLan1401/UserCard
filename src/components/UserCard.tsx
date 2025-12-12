@@ -4,8 +4,8 @@ import type { Button } from "../types/button"
 
 type UserCardProp = {
     user: User,
-    onDeleteUser: (user: User) => void,
-    onUpdateUser: (user: User) => void
+    onDeleteUser: () => void,
+    onUpdateUser: () => void
 }
 
 function MyButton({ title, disable }: Button) {
@@ -40,10 +40,10 @@ export default function UserCard({ user, onDeleteUser, onUpdateUser }: UserCardP
             </div>
             <div className="flex gap-5 ">
                 <button
-                    onClick={() => onDeleteUser(user)}
+                    onClick={onDeleteUser}
                     className=" px-2 py-1 bg-red-400 rounded-2xl ">Xóa</button>
                 <button
-                    onClick={() => onUpdateUser(user)}
+                    onClick={onUpdateUser}
                     className=" px-2 py-1 bg-blue-400 rounded-2xl">Sửa</button>
             </div>
 

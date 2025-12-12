@@ -9,7 +9,6 @@ export async function GetPost(): Promise<Post[]> {
     const data: Post[] = await res.json();
 
     return data.map(post => ({
-        userId: post.userId,
         id: post.id,
         title: post.title,
         body: post.body,

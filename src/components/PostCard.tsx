@@ -1,21 +1,12 @@
 import type { Post } from "../types/post"
-import type { Button } from "../types/button"
 
-
-
-function MyButton({ title, disable }: Button) {
-    return (
-        <button
-            disabled={disable}
-            className="px-4 py-2 outline-1  mt-2 outline-green-300 rounded-2xl bg-green-300/50 font-semibold">
-            {title}
-        </button>
-    )
+type PostCard = {
+    post: Post,
+    onDelete: (post: Post) => void;
+    onUpdate: (post: Post) => void;
 }
 
-
-
-export default function PostCard({ userId, id, title, body }: Post) {
+export default function PostCard({ post, onDelete, onUpdate }: PostCard) {
 
     return (
 
@@ -23,9 +14,17 @@ export default function PostCard({ userId, id, title, body }: Post) {
             <div>
                 <h2
                     className="font-bold p-2"
-                >{title}</h2>
-                <h4 className="font-semibold">{body}</h4>
-                <MyButton disable={false} />
+                >{post.title}</h2>
+                <h4 className="font-semibold">{post.body}</h4>
+
+                <div className="flex gap-5 ">
+                    <button
+                        onClick={() => onDelete(post)}
+                        className=" px-2 py-1 bg-red-400 rounded-2xl ">Xóa</button>
+                    <button
+                        onClick={() => onUpdate(post)}
+                        className=" px-2 py-1 bg-blue-400 rounded-2xl">Sửa</button>
+                </div>
             </div>
         </div>
 
