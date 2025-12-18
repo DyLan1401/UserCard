@@ -1,5 +1,17 @@
 # React + TypeScript + Vite
 
+
+--this web could Filter Role, Search,add,delete,update
+
+--role of file useUser is logic processing of web : Filter user, Search user, CRUD user
+
+--this web save infomation of user in localstrange 
+
+--Logic and UI are broken down into smaller parts processing easy and control web. 
+
+
+
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

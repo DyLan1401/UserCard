@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { User } from "../types/user";
 import { GetUser } from '../services/userService';
+import UserStats from '../utils/userStats'
 export function useUsers() {
 
     // ================= STATE =================
     const [users, setUsers] = useState<User[]>([]);
     const [editingUserId, setEditingUserId] = useState<number | null>(null);
-
+    //  
+    const { total, totalAdmins, totalNormalUsers } = UserStats(users);
     //
     const [search, setSearch] = useState("");
     const [roleFilter, setRoleFilter] = useState('all');
@@ -15,7 +17,6 @@ export function useUsers() {
     const [error, setError] = useState<string>("");
 
     const STORAGE_KEY = "user";
-
 
     // ================= FETCH =================
 
@@ -76,10 +77,16 @@ export function useUsers() {
                 user.email?.toLowerCase().includes(search.toLowerCase())
 
 
+            console.log({
+                roleFilter,
+                userRole: user.role,
+            });
             //trả về dữ liệu 
             return rolematch && searchMatch;
         });
     }, [users, search, roleFilter]);
+
+
 
     const editingUser =
         editingUserId !== null
@@ -109,15 +116,6 @@ export function useUsers() {
     };
     // =================Dashboard =================
 
-    //tổng tất cả user
-    const totalUsers = users.length;
-    //tổng user có role admin
-    const totalAdmins = users.filter(user => user.role === "admin").length;
-    //tổng user có role user
-    const totalNormalUsers = users.reduce((total, user) => {
-        if (user.role === "user") return total + 1;
-        return total;
-    }, 0);
 
     return {
         // state
@@ -127,7 +125,7 @@ export function useUsers() {
         search,
         roleFilter,
         editingUser,
-        totalUsers,
+        total,
         totalAdmins,
         totalNormalUsers,
 

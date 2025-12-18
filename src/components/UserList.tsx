@@ -10,7 +10,7 @@ export default function UserList() {
         search,
         roleFilter,
         editingUser,
-        totalUsers,
+        total,
         totalAdmins,
         totalNormalUsers,
 
@@ -66,7 +66,7 @@ export default function UserList() {
                     </div>
                 </div>
                 <div className='flex gap-3'>
-                    <div className='px-2 py-1 bg-blue-300 rounded-2xl'>Tổng số user là : {totalUsers}</div>
+                    <div className='px-2 py-1 bg-blue-300 rounded-2xl'>Tổng số user là : {total}</div>
                     <div className='px-2 py-1 bg-green-300 rounded-2xl'>Tổng số role admin là : {totalAdmins}</div>
                     <div className='px-2 py-1 bg-yellow-300 rounded-2xl'>Tổng số role user là : {totalNormalUsers}</div>
 
