@@ -55,11 +55,7 @@ export function useUsers() {
         fetchUser();
     }, []);
 
-    useEffect(() => {
-        if (users.length > 0) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
-        }
-    }, [users]);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
 
 
 
@@ -76,11 +72,6 @@ export function useUsers() {
                 user.name?.toLowerCase().includes(search.toLowerCase()) ||
                 user.email?.toLowerCase().includes(search.toLowerCase())
 
-
-            console.log({
-                roleFilter,
-                userRole: user.role,
-            });
             //trả về dữ liệu 
             return rolematch && searchMatch;
         });
@@ -119,9 +110,12 @@ export function useUsers() {
 
     return {
         // state
-        users: FilterRole,
+        users,
+        FilterUser: FilterRole,
         loading,
         error,
+
+        //derived
         search,
         roleFilter,
         editingUser,

@@ -4,7 +4,8 @@ import { useUsers } from '../hooks/useUsers';
 export default function UserList() {
     const {
         // state
-        users: FilterRole,
+        users,
+        FilterUser: FilterRole,
         loading,
         error,
         search,
